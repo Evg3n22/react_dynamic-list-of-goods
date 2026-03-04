@@ -12,34 +12,40 @@ type SelectedData = 'getAll' | 'get5First' | 'getRedGoods' | '';
 export const App: React.FC = () => {
   const [goodsList, setGoodsList] = useState<Good[]>([]);
   const [selectedData, setSelectedData] = useState<SelectedData>('');
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (!selectedData) {
       return;
     }
 
-    if (selectedData === 'getAll') {
-      getAll()
-        .then(setGoodsList)
-        .catch(error => {
-          throw new Error(`${error.message}`);
-        });
-    }
+    setLoading(true);
 
-    if (selectedData === 'get5First') {
-      get5First()
-        .then(setGoodsList)
-        .catch(error => {
-          throw new Error(`${error.message}`);
-        });
-    }
+    switch (selectedData) {
+      case 'getAll':
+        getAll()
+          .then(setGoodsList)
+          .catch(err => setError(err.message))
+          .finally(() => setLoading(false));
 
-    if (selectedData === 'getRedGoods') {
-      getRedGoods()
-        .then(setGoodsList)
-        .catch(error => {
-          throw new Error(`${error.message}`);
-        });
+        break;
+
+      case 'get5First':
+        get5First()
+          .then(setGoodsList)
+          .catch(err => setError(err.message))
+          .finally(() => setLoading(false));
+
+        break;
+
+      case 'getRedGoods':
+        getRedGoods()
+          .then(setGoodsList)
+          .catch(err => setError(err.message))
+          .finally(() => setLoading(false));
+
+        break;
     }
   }, [selectedData]);
 
@@ -71,6 +77,8 @@ export const App: React.FC = () => {
         Load red goods
       </button>
 
+      {loading && !error && !selectedData && <div>Loading...</div>}
+      {!loading && error && <div>{error}</div>}
       {selectedData && <GoodsList goods={goodsList} />}
     </div>
   );
