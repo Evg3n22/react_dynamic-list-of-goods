@@ -19,15 +19,27 @@ export const App: React.FC = () => {
     }
 
     if (selectedData === 'getAll') {
-      getAll().then(setGoodsList);
+      getAll()
+        .then(setGoodsList)
+        .catch(error => {
+          throw new Error(`${error.message}`);
+        });
     }
 
     if (selectedData === 'get5First') {
-      get5First().then(setGoodsList);
+      get5First()
+        .then(setGoodsList)
+        .catch(error => {
+          throw new Error(`${error.message}`);
+        });
     }
 
     if (selectedData === 'getRedGoods') {
-      getRedGoods().then(setGoodsList);
+      getRedGoods()
+        .then(setGoodsList)
+        .catch(error => {
+          throw new Error(`${error.message}`);
+        });
     }
   }, [selectedData]);
 
